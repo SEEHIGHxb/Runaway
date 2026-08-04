@@ -377,6 +377,19 @@
               </div>
             </label>
 
+            <label class="field field-wide" style="flex-direction: row; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px; margin-top: 8px;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <span style="font-size: 0.95rem; font-weight: 700; color: var(--ink);">Share with the Life Balance Index</span>
+                <span class="import-hint" style="margin: 0; font-size: 0.75rem;">Share this week's totals — how many days you ran and how many minutes — with the Life Balance Index on this device. Your own runs only, never your friends'. No names, no individual run dates, no notes, and nothing goes over the network. The Life Balance Index has its own switch too.</span>
+              </div>
+              <div id="lbi-switch" class="theme-seg" title="Share this week's running with the Life Balance Index">
+                <button type="button" class="theme-seg-btn" data-lbi-choice="off">Off</button>
+                <button type="button" class="theme-seg-btn" data-lbi-choice="on">On</button>
+                <div class="theme-seg-handle"></div>
+              </div>
+            </label>
+            <span id="lbi-export-status" class="import-hint" style="font-size: 0.75rem;" aria-live="polite"></span>
+
             <div class="form-actions">
               <button type="submit" class="btn btn-primary">Save Profile</button>
               <span id="profile-msg" class="run-msg" aria-live="polite"></span>
@@ -530,6 +543,6 @@
   <!-- Hidden Off-screen Container for html2canvas rendering at full 1080p -->
   <div id="share-render-container" style="position: absolute; left: -9999px; top: -9999px; width: 1080px; overflow: hidden; background: #fff;"></div>
 
-  <script type="module" src="./app.js?v=11"></script>
+  <script type="module" src="./app.js?v=12"></script>
 </body>
 </html>

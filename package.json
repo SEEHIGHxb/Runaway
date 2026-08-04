@@ -1,0 +1,11 @@
+{
+  "name": "runaway",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Runaway — realtime group run tracker. Static site; this file exists only so Node can run the tests.",
+  "//": "type=module makes Node parse the app's .js files as the ES modules they already are (the browser loads them with <script type=module>). No build step and no dependencies — the app is still served exactly as it sits on disk.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"tests/**/*.test.mjs\""
+  }
+}

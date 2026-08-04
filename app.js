@@ -30,6 +30,12 @@ import { initAvatarCropper } from './cropper.js';
 import { initNotifications, resyncNotifyHandle, teardownPushOnLogout } from './notifications.js';
 import { initShare, openShareRun, openShareLeaderboard } from './share.js';
 import {
+  initLbiBridge,
+  refreshLbiBridge,
+  resyncLbiHandle,
+  clearLbiBridge,
+} from './lbi-bridge.js';
+import {
   initLeaderboard,
   resetLeaderboardFilters,
   renderLeaderboard,
@@ -160,6 +166,9 @@ function init() {
 
   // Feature modules (deps injected to keep the import graph acyclic)
   initShare();
+  // Binds the Profile-tab export switch. Safe before auth: with no session it
+  // writes nothing, and the payload is refreshed on every successful runs fetch.
+  initLbiBridge();
   initLeaderboard({
     switchTab,
     reloadRuns: loadRuns,
@@ -258,6 +267,9 @@ function exitApp() {
   $('#gate').style.display = '';
   $('#gate-error').hidden = true;
   state.me = null;
+  // Signing out revokes the export. Anything else would leave one account's
+  // running readable to whoever signs in next on this browser.
+  clearLbiBridge();
   if (unsubscribe) {
     unsubscribe();
     unsubscribe = null;
@@ -325,6 +337,10 @@ async function loadProfileTab() {
   // The notification toggle's slider was positioned at startup while this panel
   // was hidden (offsetWidth 0), so snap it to the right spot now that it's shown.
   resyncNotifyHandle();
+  // Same hidden-panel measurement problem for the LBI switch, and it re-reads
+  // the week: the ledger may not change all session, but the ISO week it is
+  // measured over rolls over at midnight on Sunday.
+  resyncLbiHandle();
 
   try {
     const user = await getCurrentUser();
@@ -408,6 +424,10 @@ async function loadRuns() {
     setLive(true);
     renderLeaderboard();
     renderRuns();
+    // Only on the success path: the catch below leaves state.runs untouched, so
+    // publishing there would export the PREVIOUS fetch's runs — or an empty
+    // array on the first failed load, which reads as "ran nothing this week".
+    refreshLbiBridge();
   } catch (err) {
     setLive(false);
     const connNote = $('#conn-note');
